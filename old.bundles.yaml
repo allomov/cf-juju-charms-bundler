@@ -1,0 +1,81 @@
+base:
+  series: trusty
+  services:
+    nats:
+      charm: cf-nats
+      branch: lp:~cf-charmers/charms/trusty/cf-nats/trunk
+      constraints: "arch=amd64"
+    cc:
+      charm: cf-cloud-controller
+      branch: lp:~johnsca/charms/trusty/cf-cloud-controller/hm9k
+      constraints: "arch=amd64"
+    dea:
+      charm: cf-dea
+      branch: lp:~cf-charmers/charms/trusty/cf-dea/trunk
+      constraints: "arch=amd64 mem=2G"
+    uaa:
+      charm: cf-uaa
+      branch: lp:~cf-charmers/charms/trusty/cf-uaa/trunk
+      constraints: "arch=amd64"
+    router:
+      charm: cf-go-router
+      branch: lp:~cf-charmers/charms/trusty/cf-go-router/trunk
+      constraints: "arch=amd64"
+      expose: true
+    logrouter:
+      charm: cf-logrouter
+      branch: lp:~cf-charmers/charms/trusty/cf-logrouter/trunk
+      constraints: "arch=amd64"
+    loggregator:
+      charm: cf-loggregator
+      branch: lp:~cf-charmers/charms/trusty/cf-loggregator/trunk
+      constraints: "arch=amd64"
+    mysql:
+      charm: mysql
+      branch: lp:~cf-charmers/charms/trusty/mysql/trunk
+      constraints: "arch=amd64"
+    etcd:
+      charm: etcd
+      branch: lp:~hazmat/charms/trusty/etcd/trunk
+      constraints: "arch=amd64"
+    hm:
+      charm: cf-hm9000
+      branch: lp:~johnsca/charms/trusty/cf-hm9000/services
+      constraints: "arch=amd64"
+  relations:
+    - ['router:router', [cc, uaa, logrouter, dea]]
+    - [nats, [cc, uaa, router, loggregator, logrouter, dea]]
+    - ['logrouter:logrouter', [router, dea, loggregator]]
+    - ['logrouter:loggregator', [loggregator]]
+    - [mysql, [cc]]
+    - [hm, [etcd, cc, nats]]
+
+local:
+  inherits: base
+  services:
+    dea:
+      to: kvm:0
+
+single-aws-node:
+  inherits: [base]
+  services:
+    nats:
+      to: 0
+    cc:
+      to: 0
+    mysql:
+      to: 0
+    dea:
+      to: 0
+    uaa:
+      to: 0
+    router:
+      to: 0
+    logrouter:
+      to: 0
+    loggregator:
+      to: 0
+    etcd:
+      to: 0
+    hm:
+      to: 0

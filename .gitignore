@@ -1,0 +1,12 @@
+cf-hm9000
+etcd
+mysql
+cf-loggregator
+cf-logrouter
+cf-go-router
+cf-uaa
+cf-dea
+cf-cloud-controller
+cf-nats
+cf-admin-ui
+

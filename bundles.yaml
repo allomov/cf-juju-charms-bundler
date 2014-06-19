@@ -1,0 +1,87 @@
+base:
+  series: trusty
+  services:
+    nats:
+      charm: cf-nats
+      branch: lp:~lomov-as/charms/trusty/cf-nats/working-version
+      constraints: "arch=amd64"
+    cc:
+      charm: cf-cloud-controller
+      branch: lp:~lomov-as/charms/trusty/cf-cloud-controller/working-version
+      constraints: "arch=amd64"
+    dea:
+      charm: cf-dea
+      branch: lp:~lomov-as/charms/trusty/cf-dea/working-version
+      constraints: "arch=amd64 mem=2G"
+    uaa:
+      charm: cf-uaa
+      branch: lp:~lomov-as/charms/trusty/cf-uaa/working-version
+      constraints: "arch=amd64"
+    router:
+      charm: cf-go-router
+      branch: lp:~lomov-as/charms/trusty/cf-go-router/working-version
+      constraints: "arch=amd64"
+      expose: true
+    logrouter:
+      charm: cf-logrouter
+      branch: lp:~lomov-as/charms/trusty/cf-logrouter/working-version
+      constraints: "arch=amd64"
+    loggregator:
+      charm: cf-loggregator
+      branch: lp:~lomov-as/charms/trusty/cf-loggregator/working-version
+      constraints: "arch=amd64"
+    mysql:
+      charm: mysql
+      branch: lp:~lomov-as/charms/trusty/mysql/working-version
+      constraints: "arch=amd64"
+    etcd:
+      charm: etcd
+      branch: lp:~lomov-as/charms/trusty/etcd/working-version
+      constraints: "arch=amd64"
+    hm:
+      charm: cf-hm9000
+      branch: lp:~lomov-as/charms/trusty/cf-hm9000/working-version
+      constraints: "arch=amd64"
+    admin-ui:
+      charm: cf-admin-ui
+      branch: lp:~lomov-as/charms/trusty/cf-admin-ui/working-version
+      constraints: "arch=amd64"
+  relations:
+    - ['router:router', [cc, uaa, logrouter, dea]]
+    - [nats, [cc, uaa, router, loggregator, logrouter, dea]]
+    - ['logrouter:logrouter', [router, dea, loggregator]]
+    - ['logrouter:loggregator', [loggregator]]
+    - [mysql, [cc]]
+    - [hm, [etcd, cc, nats]]
+    - [hm, [etcd, cc, nats]]
+    - ['admin-ui', [nats, cc]]
+
+local:
+  inherits: base
+  services:
+    dea:
+      to: kvm:0
+
+single-aws-node:
+  inherits: [base]
+  services:
+    nats:
+      to: 0
+    cc:
+      to: 0
+    mysql:
+      to: 0
+    dea:
+      to: 0
+    uaa:
+      to: 0
+    router:
+      to: 0
+    logrouter:
+      to: 0
+    loggregator:
+      to: 0
+    etcd:
+      to: 0
+    hm:
+      to: 0
