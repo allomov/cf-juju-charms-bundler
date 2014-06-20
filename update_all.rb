@@ -1,6 +1,6 @@
 require 'yaml'
 
-bundle = YAML.load_file('old.bundles.yaml')
+bundle = YAML.load_file('official.bundles.yaml')
 
 puts bundle['base'].inspect
 puts bundle['base']['services'].inspect

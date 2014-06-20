@@ -1,6 +1,6 @@
 require 'yaml'
 
-bundle = YAML.load_file('old.bundles.yaml')
+bundle = YAML.load_file('official.bundles.yaml')
 
 bundle['base']['services'].each do |service|
 	puts service['charm']
